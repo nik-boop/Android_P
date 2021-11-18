@@ -1,11 +1,13 @@
-﻿## Main_menu
+## Main_menu
 
 
 layout - activity_main.xml, mymenu.xml
+
 ![](git-img/img.png)
 ![](git-img/img_3.png)
 
 Код программы:
+
 ![](git-img/img_1.png)
 ![](git-img/img_2.png)
 

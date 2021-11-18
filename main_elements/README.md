@@ -1,11 +1,13 @@
-﻿
+
 ## Main_elements
 
 
 layout - activity_main.xml
+
 ![](git-img/img.png)
 
-Ресурсы:  
+Ресурсы: 
+
 ![](git-img/img_1.png)
 
 Код программы:

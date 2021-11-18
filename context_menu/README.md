@@ -1,10 +1,12 @@
-﻿# Сontext_menu
+# Сontext_menu
 
 layout - activity_main.xml
+
 ![](git-img/img.png)
 
 
 Код программы:
+
 ![](git-img/img_1.png)
 
 Для создание контекстного меню необходимо сначала указать обект, при 
