@@ -9,6 +9,7 @@ layout - activity_main.xml
 ![](git-img/img_1.png)
 
 Код программы:
+
 ![](git-img/img_2.png)
 ![](git-img/img_3.png) 
 
