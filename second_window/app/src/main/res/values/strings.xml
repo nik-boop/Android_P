@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">second_window</string>
+    <string name="go_to_activity_two">Go to Activity Two</string>
+</resources>
