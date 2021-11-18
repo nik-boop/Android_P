@@ -38,7 +38,7 @@
                 android:ems="10"
                 android:inputType="number"
                 android:textStyle="italic"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+                />
 
         </TableRow>
 
