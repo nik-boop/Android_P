@@ -1,4 +1,4 @@
-## Guess_number
+﻿## Guess_number
 
 layout - activity_main.xml
 ![](git-img/img.png)
@@ -14,7 +14,7 @@ layout - activity_main.xml
 Код программы:
 ![](git-img/img_1.png)
 ![](git-img/img_2.png)
-Проверка некоректного ввода происходит через обработчик исключений Try, \
+Проверка некорректного ввода происходит через обработчик исключений Try, \
 в случае если вводимое значение не является числом \
 возбуждается исключения сообщаю пользователю некорректности введённых данных
 
@@ -25,3 +25,4 @@ layout - activity_main.xml
 ![](git-img/img_5.png)
 ![](git-img/img_6.png)
 ![](git-img/img_7.png)
+
