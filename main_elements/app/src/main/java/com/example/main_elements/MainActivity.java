@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d("omg android", position + ": " + mNameList.get(position));
-        mainTextView.setText("Click");
+        //mainTextView.setText("Click");
         mainTextView.setText(mNameList.get(position).toString()
                 + " is learning Android development!");
     }

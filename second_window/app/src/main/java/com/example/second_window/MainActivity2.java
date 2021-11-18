@@ -43,9 +43,4 @@ public class MainActivity2 extends AppCompatActivity {
         super.onRestart();
         Log.d(TAG, "MainActivity: onRestart()");
     }
-
-
-
-
-
 }
