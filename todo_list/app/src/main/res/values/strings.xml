@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">to-do_list</string>
+    <string name="main_title">Категории</string>
+    <string name="cats_title">Планы</string>
+    <string name="buttonplan">Добавить</string>
+    <string name="edittext">Действие</string>
+    <string-array name="cat_names">
+        <item>Категория№1</item>
+        <item>Категория№2</item>
+        <item>Категория№3</item>
+        <item>Категория№4</item>
+    </string-array>
+</resources>
