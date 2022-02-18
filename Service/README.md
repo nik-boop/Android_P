@@ -1,1 +1,1 @@
-![Отчет](Отчеты/Service.pdf)
+Отчеты/Service.pdf
