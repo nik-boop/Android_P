@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnBindService = findViewById(R.id.btnBindService);
         Button btnKillService = findViewById(R.id.btnKillService);
         Button btnGoService = findViewById(R.id.btnGoService);
-        Intent start_service = new Intent(MainActivity.this, MyService.class);
+        Intent start_service = new Intent(this, MyService.class);
 
         btnStartService.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (myService != null){
-                    String ansver = myService.MyService();
-                    Toast.makeText(MainActivity.this, "Completed " + ansver, Toast.LENGTH_SHORT).show();
+                    String answer = myService.MyService();
+                    Toast.makeText(MainActivity.this, "Completed " + answer, Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Toast.makeText(MainActivity.this, "Сервис не вызван ", Toast.LENGTH_SHORT).show();
