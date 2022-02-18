@@ -3,45 +3,41 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="wrap_content">
     <Button
         android:id="@+id/btnStartService"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="70dp"
         android:layout_weight="0.2"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="30dp"
-        android:text="startService()"/>
-    <Button
-        android:id="@+id/btnStopService"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="30dp"
-        android:text="stopService()"/>
+        android:layout_marginVertical="10dp"
+        android:text="startService"/>
     <Button
         android:id="@+id/btnBindService"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="70dp"
         android:layout_weight="0.2"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="30dp"
-        android:text="bindService()"/>
+        android:layout_marginVertical="10dp"
+        android:text="bindService"/>
+
     <Button
-        android:id="@+id/btnKillBindService"
+        android:id="@+id/btnKillService"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="70dp"
         android:layout_weight="0.2"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="30dp"
-        android:text="kill bind service"/>
+        android:layout_marginVertical="10dp"
+        android:text="KillService" />
+
     <Button
-        android:id="@+id/btnBindGenNumber"
+        android:id="@+id/btnGoService"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="70dp"
         android:layout_weight="0.2"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="30dp"
-        android:text="Action"/>
+        android:layout_marginVertical="10dp"
+        android:text="Complete Service"/>
+
+
 </LinearLayout>
