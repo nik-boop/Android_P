@@ -41,3 +41,9 @@
 
 
 </LinearLayout>
+    2022-02-18 11:48:49.479 15107-15107/com.example.service D/SERVICE: Service has started
+    2022-02-18 11:48:49.480 15107-15107/com.example.service D/SERVICE: Service binded
+    2022-02-18 11:48:53.182 15107-15107/com.example.service D/SERVICE: Number: 0
+    2022-02-18 11:48:53.182 15107-15107/com.example.service D/SERVICE: Number: 99999
+    2022-02-18 11:48:55.542 15107-15107/com.example.service D/SERVICE: MyService onUnbind
+    2022-02-18 11:48:55.542 15107-15107/com.example.service D/SERVICE: Service has been destroyed!
