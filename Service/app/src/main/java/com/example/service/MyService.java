@@ -50,17 +50,14 @@ public class MyService extends Service {
         return super.onUnbind(intent);
     }
 
-    public int MyService() {
+    public String MyService() {
 
         int number = 0;
-        while (number < 9999) {
-            number ++;
-            Log.d(DEBUG, "Number: " + number);
+        Log.d(DEBUG, "Number: " + number);
+        while (number < 99999) {
+            number++;
         }
-        return 0;
-
-    }
-    public int MS(){
-        return 1;
+        Log.d(DEBUG, "Number: " + number);
+        return "✓";
     }
 }

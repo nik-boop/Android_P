@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.lang.reflect.Type;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -86,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (myService != null){
-                    int number = myService.MyService();
-                    Toast.makeText(MainActivity.this, "Completed " + number, Toast.LENGTH_SHORT).show();
+                    String ansver = myService.MyService();
+                    Toast.makeText(MainActivity.this, "Completed " + ansver, Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Toast.makeText(MainActivity.this, "Сервис не вызван ", Toast.LENGTH_SHORT).show();
