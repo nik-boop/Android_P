@@ -4,8 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.google.android.material.tabs.TabLayout;
+
+import java.io.File;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
