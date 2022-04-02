@@ -1,20 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import Constants from 'expo-constants';
+import {Button, Dimensions, Text, View} from 'react-native';
 
-export default function App() {
+const YourApp = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: Constants.statusBarHeight}}>
+        <Text>
+          Hello world!
+        </Text>
+        <View style={{marginVertical: 160, borderWidth: 3, width: Dimensions.get('window').width}}/>
+        <Button
+            title={'press me!'}/>
+      </View>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default YourApp;
