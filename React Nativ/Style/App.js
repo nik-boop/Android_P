@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Card } from 'react-native-paper';
 import Constants from 'expo-constants';
 
