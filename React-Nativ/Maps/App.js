@@ -3,47 +3,20 @@ import MapView, {Callout, Circle, Marker, UrlTile} from 'react-native-maps';
 import {StyleSheet, Text, View, Dimensions} from 'react-native';
 
 export default function App() {
-    const [pin, setPin] = React.useState({
-        latitude: 37.78825,
-        longitude: -122.4324
-    })
+
     return (
         <View style={styles.container}>
+            <Text>
+                Maps
+            </Text>
             <MapView
                 style={styles.map}
-                initialRegion={{
-                    latitude: 37.78825,
-                    longitude: -122.4324,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }}
-
             >
-                <Marker
-                    coordinate={{
-                        latitude: 37.78825,
-                        longitude: -122.4324
-                    }}
-                    draggable={true}
-                    onDragStart={(e) => {
-                        console.log("Drag start", e.nativeEvent.coordinate)
-                    }}
-                    onDragEnd={(e) => {
-                        console.log("Drag start", e.nativeEvent.coordinate);
-                        setPin({
-                            latitude: e.nativeEvent.coordinate.latitude,
-                            longitude: e.nativeEvent.coordinate.longitude
-                        })
-                    }}
-                >
-                    <Callout>
-                        <Text>I'm here</Text>
-                    </Callout>
-                </Marker>
-                <Circle
-                    center={pin}
-                    radius={1000}/>
+                <MapView.UrlTile
+                    urlTemplate='http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                />
             </MapView>
+
         </View>
     );
 }
@@ -57,6 +30,7 @@ const styles = StyleSheet.create({
     },
     map: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-    },
+        height: Dimensions.get('window').height*0.9
+    }
+
 });
