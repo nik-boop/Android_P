@@ -56,7 +56,7 @@ export default function App() {
                 )}
                 <Marker
                     coordinate={location}
-                    title={"Start point"}
+                    title={"User"}
                     draggable={true}
                     pinColor={'green'}
                     onDragStart={
