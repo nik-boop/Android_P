@@ -2,9 +2,31 @@ import * as React from 'react';
 import MapView, {Callout, Circle, Marker, Polygon, Polyline, UrlTile} from 'react-native-maps';
 import {StyleSheet, Text, View, Dimensions, Button} from 'react-native';
 import {useState} from "react";
-
+import RNLocation from 'react-native-location';
 
 export default function App() {
+    RNLocation.configure({
+        distanceFilter: 100, // Meters
+        desiredAccuracy: {
+            ios: "best",
+            android: "balancedPowerAccuracy"
+        },
+        // Android only
+        androidProvider: "auto",
+        interval: 5000, // Milliseconds
+        fastestInterval: 10000, // Milliseconds
+        maxWaitTime: 5000, // Milliseconds
+        // iOS Only
+        activityType: "other",
+        allowsBackgroundLocationUpdates: false,
+        headingFilter: 1, // Degrees
+        headingOrientation: "portrait",
+        pausesLocationUpdatesAutomatically: false,
+        showsBackgroundLocationIndicator: false,
+    })
+    const getPoz = () =>{
+
+    }
 
     const [location, setLocation] = useState(
         {
@@ -124,6 +146,9 @@ export default function App() {
                 <Button
                     onPress={clearMarker}
                     title="Clear"/>
+                <Button
+                    onPress={getPoz}
+                    title="Poz"/>
             </View>
         </View>
     );
