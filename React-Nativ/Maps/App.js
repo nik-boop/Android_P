@@ -4,7 +4,7 @@ import {StyleSheet, Text, View, Dimensions, Button} from 'react-native';
 import {useState} from "react";
 import RNLocation from 'react-native-location';
 
-export default function App() {a
+export default function App() {
     RNLocation.configure({
         distanceFilter: 100, // Meters
         desiredAccuracy: {

@@ -5,17 +5,17 @@
  * @format
  * @flow strict-local
  */
-
+import Geolocation from "react-native-geolocation-service";
 import React, { Component, useState } from "react";
 import type { Node } from "react";
 import {
   Button,
-  Dimensions,
+  Dimensions, PermissionsAndroid, Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
+  Text, ToastAndroid,
   useColorScheme,
   View,
 } from "react-native";
@@ -39,13 +39,40 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: {
-        latitude: 37.78825,
-        longitude: -122.4324,
-      },
+      location: { latitude: 37.78825, longitude: -122.4324 },
       lines: [],
       marklist: [],
+      position: null,
+      position_c: null,
+    };
 
+    this.hasLocationPermission = async () => {
+      if (Platform.OS === "android" && Platform.Version < 23) {
+        return true;
+      }
+      const hasPermission = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (hasPermission) {
+        return true;
+      }
+      const status = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+      if (status === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      }
+      if (
+        status === PermissionsAndroid.RESULTS.DENIED ||
+        status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
+      ) {
+        ToastAndroid.show(
+          "Location permission denied by user.",
+          ToastAndroid.LONG,
+        );
+      }
+
+      return false;
     };
 
     this.drawLine = () => {
@@ -53,24 +80,43 @@ class App extends Component {
       lines.push(this.state.location);
       this.setState({ lines: lines });
     };
+
     this.clearLine = () => {
       this.setState({ lines: [] });
     };
+
     this.clearMarker = () => {
       this.setState({ marklist: [], lines: [] });
     };
-    this.getPoz = () => {
 
+    this.getPoz = async () => {
+      const hasPermission = await this.hasLocationPermission();
+      if (!hasPermission) {
+        console.log("нет разрешений!");
+      }
+      Geolocation.getCurrentPosition(
+        pos => {
+          this.setState({ position: pos });
+          this.setState({ position_c: { latitude: pos.coords.latitude, longitude: pos.coords.longitude } });
+          //console.log(this.state.position);
+          console.log(this.state.position_c);
+        },
+        error => {
+          console.log("Ошибка");
+          console.log(error);
+        },
+      );
     };
-
-
   }
 
   render() {
     return (
       <View style={styles.main}>
         <Text style={styles.title_map}>Привет</Text>
-        <MapView style={styles.map} mapType={"none"}>
+        <MapView
+          style={styles.map}
+          mapType={"none"}
+        >
           <UrlTile
             //urlTemplate="http://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
             urlTemplate="https://a.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png"
@@ -132,13 +178,16 @@ class App extends Component {
               });
             }}
           />
+
+          {this.state.position_c !== null && <Marker coordinate={this.state.position_c} title={"User Poz"} />}
+
           <Circle
             radius={1000}
             center={this.state.location}
             zIndex={1}
             fillColor={"rgba(255,0,255,0.2)"}
           />
-          {this.state.lines.length > 0 && <Polyline coordinates={this.state.lines} zIndex={2}/>}
+          {this.state.lines.length > 0 && <Polyline coordinates={this.state.lines} zIndex={2} />}
         </MapView>
         <View style={styles.coords_view}>
           <Text style={styles.coords_text}> User position </Text>
