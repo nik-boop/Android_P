@@ -1,215 +1,223 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-import Geolocation from "react-native-geolocation-service";
-import React, { Component, useState } from "react";
-import type { Node } from "react";
+import React, { Component } from "react";
 import {
-  Button,
-  Dimensions, PermissionsAndroid, Platform,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
+  Dimensions,
   StyleSheet,
-  Text, ToastAndroid,
-  useColorScheme,
+  ToastAndroid,
   View,
 } from "react-native";
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from "react-native/Libraries/NewAppScreen";
-import MapView, {
-  Circle,
-  Marker,
-  Polygon,
-  Polyline,
-  UrlTile,
-} from "react-native-maps";
+
+
+import MarkList from "./components/MarkList";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import TopLine from "./components/TopLine";
+import RoutList from "./components/RoutList";
+import MyMap from "./components/MyMap";
 
 class App extends Component {
   constructor(props) {
     super(props);
+
+    this.storeData = async (key, value) => {
+      try {
+        await AsyncStorage.setItem(key, value);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    this.storeDataJs = async (key, value) => {
+      try {
+        const jsonValue = JSON.stringify(value);
+        await AsyncStorage.setItem(key, jsonValue);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    this.getData = async (key) => {
+      try {
+        return await AsyncStorage.getItem(key);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    this.getDataJs = async (key) => {
+      try {
+        const jsonValue = await AsyncStorage.getItem(key);
+        return jsonValue != null ? JSON.parse(jsonValue) : null;
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    this.removeValue = async (key) => {
+      try {
+        await AsyncStorage.removeItem(key);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    this.getAllKeys = async () => {
+      let keys = [];
+      try {
+        keys = await AsyncStorage.getAllKeys();
+      } catch (e) {
+      }
+      console.log(keys);
+    };
+    let Path = {
+      name: "Новый путь",
+      myMarks: [{name: 'маркер 1', coords: {latitude: 10, longitude: 3}, desc: 'Тут опиcание'},
+        {name: 'маркер 2', coords: {latitude: 12, longitude: 4}, desc: 'Тут опиcание'},],
+      pathMarks: [],
+    };
+    this.getDataJs("@nullPath").then(r => {
+      r == null ? this.storeDataJs("@nullPath", Path) : null;
+    });
+    let ways = [{ name: "1" }, { name: "2" }, { name: "3" }, { name: "4" }, { name: "5" }, { name: "6" }]
+    this.storeDataJs("@Ways", ways);
+
+    this.getAllKeys();
+
+
     this.state = {
-      location: { latitude: 37.78825, longitude: -122.4324 },
-      lines: [],
-      marklist: [],
-      position: null,
-      position_c: null,
+      train_v: false,
+      data: Path,
+      ways: ways,
+      windowsNumber: 0,
     };
 
-    this.hasLocationPermission = async () => {
-      if (Platform.OS === "android" && Platform.Version < 23) {
-        return true;
+
+    this.getData("@lastKey").then(r => {
+      console.log(r);
+    });
+    console.log(this.state.data);
+    console.log("ways: " + this.state.ways)
+  }
+
+  componentDidMount() {
+    this.getDataJs("@Ways").then(r => {
+      if (r == null) {
+        console.log("res new : " + r)
+        this.storeDataJs("@Ways", [{ name: "1" }, { name: "2" }, { name: "3" }, { name: "4" }, { name: "5" }, { name: "6" }]);
+        this.setState({ways: r})
+      } else {
+        if (this.state.ways != r){
+          this.setState({ways: r})
+          console.log("res: " + r)
+        }
       }
-      const hasPermission = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (hasPermission) {
-        return true;
-      }
-      const status = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (status === PermissionsAndroid.RESULTS.GRANTED) {
-        return true;
-      }
-      if (
-        status === PermissionsAndroid.RESULTS.DENIED ||
-        status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
-      ) {
-        ToastAndroid.show(
-          "Location permission denied by user.",
-          ToastAndroid.LONG,
-        );
-      }
+    });
+    console.log("ways: " + this.state.ways.map((item)=>{item.name}))
 
-      return false;
-    };
-
-    this.drawLine = () => {
-      let lines = this.state.marklist.map(item => (item.coords));
-      lines.push(this.state.location);
-      this.setState({ lines: lines });
-    };
-
-    this.clearLine = () => {
-      this.setState({ lines: [] });
-    };
-
-    this.clearMarker = () => {
-      this.setState({ marklist: [], lines: [] });
-    };
-
-    this.getPoz = async () => {
-      const hasPermission = await this.hasLocationPermission();
-      if (!hasPermission) {
-        console.log("нет разрешений!");
-      }
-      Geolocation.getCurrentPosition(
-        pos => {
-          this.setState({ position: pos });
-          this.setState({ position_c: { latitude: pos.coords.latitude, longitude: pos.coords.longitude } });
-          //console.log(this.state.position);
-          console.log(this.state.position_c);
-        },
-        error => {
-          console.log("Ошибка");
-          console.log(error);
-        },
-      );
-    };
   }
 
   render() {
     return (
       <View style={styles.main}>
-        <Text style={styles.title_map}>Привет</Text>
-        <MapView
-          style={styles.map}
-          mapType={"none"}
+        <TopLine route={"Маршрут 1"}
+                 pathKey={this.state.keyPath}
+                 func={
+                   {
+                     train_list: (value) => {
+                       this.setState({ train_v: value });
+                     },
+                     onPressPath: (pathKey) => {
+                       ToastAndroid.showWithGravity(
+                         pathKey,
+                         ToastAndroid.SHORT,
+                         ToastAndroid.CENTER,
+                       );
+                     },
+                     changeWindow: (number) => {
+                       this.setState({ windowsNumber: number });
+                     },
+                     changeNamePath: (name) => {
+                       this.setState({ data: this.state.data.name = name });
+                     },
+                   }
+                 }
+                 visible={this.state.train_v}
+                 data={
+                   {
+                     windowsNumber: this.state.windowsNumber,
+                     mainData: this.state.data,
+                   }
+                 }
         >
-          <UrlTile
-            //urlTemplate="http://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            urlTemplate="https://a.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png"
-            maximumZ={20}
-            zIndex={0}
-          />
-          {this.state.marklist.map(
-            (items) => (
-              <Marker
-                key={items.title}
-                coordinate={items.coords}
-                title={"Point#" + items.title}
-              />
-            ),
-          )}
+        </TopLine>
+        <MyMap
+          style={styles.map}
+          func={{ none: null }}
+          data={
+            {
+              windowsNumber: this.state.windowsNumber,
+              mainData: this.state.data,
+            }
+          }
+        >
+        </MyMap>
 
-          <Marker
-            coordinate={this.state.location}
-            title={"User"}
-            draggable={true}
-            pinColor={"green"}
-            onDragStart={e => {
-              const last_coords = {
-                latitude: this.state.location.latitude,
-                longitude: this.state.location.longitude,
-              };
-              if (this.state.marklist.length === 0) {
-                this.setState(
-                  {
-                    marklist: [
-                      {
-                        coords: last_coords,
-                        title: 1,
-                      },
-                    ],
-                  },
-                );
-              } else {
-                this.setState((state, props) => (
-                    {
-                      marklist: state.marklist.concat(
-                        {
-                          coords: last_coords,
-                          title: state.marklist[state.marklist.length - 1].title + 1,
-                        },
-                      ),
-                    }
-                  ),
-                );
-              }
-            }
-            }
-            onDragEnd={e => {
-              this.setState({
-                location: {
-                  latitude: e.nativeEvent.coordinate.latitude,
-                  longitude: e.nativeEvent.coordinate.longitude,
-                },
-              });
+        {
+          this.state.windowsNumber == 1 &&
+            <MarkList
+              list={this.state.data.myMarks}>
+            </MarkList>
+        }
+        {/*
+        <MarkList
+          list={}>
+        </MarkList>
+        */}
+
+
+        <RoutList
+          func={
+            (index, item) => {
+              ToastAndroid.showWithGravity(
+                "Нажато на №" + (index + 1),
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+              );
             }}
-          />
+          visibal={this.state.train_v}
+          routes={this.state.ways}
+        >
+        </RoutList>
 
-          {this.state.position_c !== null && <Marker coordinate={this.state.position_c} title={"User Poz"} />}
-
-          <Circle
-            radius={1000}
-            center={this.state.location}
-            zIndex={1}
-            fillColor={"rgba(255,0,255,0.2)"}
-          />
-          {this.state.lines.length > 0 && <Polyline coordinates={this.state.lines} zIndex={2} />}
-        </MapView>
-        <View style={styles.coords_view}>
-          <Text style={styles.coords_text}> User position </Text>
-          <Text style={styles.coords_text}> {`latitude: ${this.state.location.latitude.toFixed(5)}`} </Text>
-          <Text style={styles.coords_text}> {`longitude: ${this.state.location.longitude.toFixed(5)}`} </Text>
-        </View>
-        <View style={styles.buttonbar}>
-          <Button
-            onPress={this.drawLine}
-            title="Draw" />
-          <Button
-            onPress={this.clearLine}
-            title="Clear" />
-          <Button
-            onPress={this.clearMarker}
-            title="Clear" />
-          <Button
-            onPress={this.getPoz}
-            title="Poz" />
-        </View>
       </View>
+
+
+      /*
+      <MarkList list={[
+        {name: 'маркер 1', coords: {latitude: 10, longitude: 3}, desc: 'Тут опиcание'},
+        {name: 'маркер 2', coords: {latitude: 12, longitude: 4}, desc: 'Тут опиcание'},
+        {name: 'маркер 3', coords: {latitude: 14, longitude: 5}, desc: 'Тут опиcание'},
+        {name: 'маркер 4', coords: {latitude: 16, longitude: 6}, desc: 'Тут опиcание'},
+        {name: 'маркер 5', coords: {latitude: 18, longitude: 7}, desc: 'Тут опиcание'},
+        {name: 'маркер 6', coords: {latitude: 20, longitude: 8}, desc: 'Тут опиcание'},
+        {name: 'маркер 7', coords: {latitude: 22, longitude: 9}, desc: 'Тут опиcание'},
+        {name: 'маркер 8', coords: {latitude: 24, longitude: 10}, desc: 'Тут опиcание'},
+        {name: 'маркер 9', coords: {latitude: 26, longitude: 11}, desc: 'Тут опиcание'},
+        {name: 'маркер 10', coords: {latitude: 28, longitude: 12}, desc: 'Тут опиcание'},
+        {name: 'маркер 11', coords: {latitude: 30, longitude: 13}, desc: 'Тут опиcание'},
+        {name: 'маркер 12', coords: {latitude: 32, longitude: 14}, desc: 'Тут опиcание'},
+        {name: 'маркер 13', coords: {latitude: 34, longitude: 15}, desc: 'Тут опиcание'},
+        {name: 'маркер 14', coords: {latitude: 36, longitude: 16}, desc: 'Тут опиcание'},
+        {name: 'маркер 15', coords: {latitude: 38, longitude: 17}, desc: 'Тут опиcание'},
+        {name: 'маркер 16', coords: {latitude: 40, longitude: 18}, desc: 'Тут опиcание'},
+        {name: 'маркер 17', coords: {latitude: 42, longitude: 19}, desc: 'Тут опиcание'},
+        {name: 'маркер 18', coords: {latitude: 44, longitude: 20}, desc: 'Тут опиcание'},
+        {name: 'маркер 19', coords: {latitude: 46, longitude: 21}, desc: 'Тут опиcание'},
+        {name: 'маркер 20', coords: {latitude: 48, longitude: 22}, desc: 'Тут опиcание'},
+        {name: 'маркер 21', coords: {latitude: 50, longitude: 23}, desc: 'Тут опиcание'},
+        {name: 'маркер 22', coords: {latitude: 52, longitude: 24}, desc: 'Тут опиcание'},
+        {name: 'маркер 23', coords: {latitude: 54, longitude: 25}, desc: 'Тут опиcание'},
+        {name: 'маркер 24', coords: {latitude: 56, longitude: 26}, desc: 'Тут опиcание'},
+        {name: 'маркер 25', coords: {latitude: 58, longitude: 27}, desc: 'Тут опиcание'},
+        ]}>
+      </MarkList>
+        */
     );
+
   }
 }
 
@@ -218,31 +226,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-  },
-  map: {
-    flex: 0.9,
-  },
-  title_map: {
-    flex: 0.1,
-    width: "100%",
-  },
-  coords_view: {
-    flex: 0.1,
-    width: "100%",
-    color: "rgba(100,100,100,1)",
-    textAlign: "left",
-    borderWidth: 1,
-
-  },
-  coords_text: {
-    fontSize: 12,
-    width: "100%",
-    color: "rgba(100,100,100,1)",
-    textAlign: "left",
-  },
-  buttonbar: {
-    width: "100%",
-    flexDirection: "row",
   },
 });
 
