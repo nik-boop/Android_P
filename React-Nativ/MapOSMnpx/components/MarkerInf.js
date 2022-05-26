@@ -49,7 +49,7 @@ class MarkerInf extends Component {
         </View>
         <View>
           <Text>
-            Длинна маршрута: {this.props.inf.pathLen}
+            Длинна маршрута: {this.props.inf.pathLen} км.
           </Text>
         </View>
         <View>

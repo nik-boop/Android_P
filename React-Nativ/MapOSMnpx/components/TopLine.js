@@ -18,18 +18,13 @@ class TopLine extends Component {
     return (
       <View style={styles.main}>
         <View style={styles.box}>
-          <Pressable onPress={() => {
-            let visible = !this.props.visible;
-            this.props.func.train_list(visible)
-          }}>
+
             <View>
               <Text style={styles.route}>
-                {this.props.route} {this.props.visible ? "▲" : "▼"}
+                {this.props.route}
               </Text>
             </View>
-          </Pressable>
-          <Button title={"Win"} onPress={()=>{this.props.data.windowsNumber == 0? this.props.func.changeWindow(1): this.props.func.changeWindow(0)}}/>
-          <Button title={"Save"} onPress={()=>{this.props.func.save()}}/>
+
 
         </View>
       </View>
@@ -44,6 +39,7 @@ const styles = StyleSheet.create({
   box: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
     boxSizing: "content-box",
     paddingTop: 10,
     paddingRight: 10,
