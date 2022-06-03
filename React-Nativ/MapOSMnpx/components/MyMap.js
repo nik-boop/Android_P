@@ -18,6 +18,7 @@ import { Alert } from "react-native";
 
 import MarkerInf from "./MarkerInf";
 import MapButton from "./MapButton";
+import GetPosition from "../scripts/getPosition";
 
 
 class MyMap extends Component {
@@ -40,190 +41,23 @@ class MyMap extends Component {
       startLoc: true,
       showLoc: true,
       pathLen: 0,
-
+      viewMarks: true,
+      newMark: null,
     };
 
-
-    this.hasLocationPermission = async () => {
-      if (Platform.OS === "android" && Platform.Version < 23) {
-        return true;
-      }
-      const hasPermission = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (hasPermission) {
-        return true;
-      }
-      const status = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (status === PermissionsAndroid.RESULTS.GRANTED) {
-        return true;
-      }
-      if (
-        status === PermissionsAndroid.RESULTS.DENIED ||
-        status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN
-      ) {
-        ToastAndroid.show(
-          "Location permission denied by user.",
-          ToastAndroid.LONG,
-        );
-      }
-      return false;
-    };
-
-    const addCoords = (position) => {
-      const initialPosition = JSON.stringify(position);
-      let time = new Date();
-      let options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        timezone: "UTC",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-      };
-
-      this.setState({
-          markers: this.state.markers.concat(
-            {
-              number: this.state.markers.length + 1,
-              title: "Точка маршрута #" + this.state.markers.length + 1,
-              distinct: "Точка пройденного маршрута",
-              coords: { latitude: position.coords.latitude, longitude: position.coords.longitude },
-              time: time.toString(),
-              timestamp: position.timestamp, // Отметка времени
-              provider: position.provider,
-              altitudeAccuracy: position.coords.altitudeAccuracy, // Точность определения высоты
-              speed: position.coords.speed,
-              heading: position.coords.heading, // Заголовок
-              accuracy: position.coords.accuracy, // Точность
-              altitude: position.coords.altitude, // Высота
-            },
-          ),
-        },
-      );
-      this.props.app.setMarkers(this.state.markers)
-      this.setState({ dataLoc: this.state.dataLoc.concat({ data: initialPosition, dataTime: time.toString }) });
-
-      this.setState({ pathLen: pathLen(this.state.markers).toFixed(3) });
-
-    };
-
-    const myPos = (position) => {
-      let time = new Date();
-      let options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        timezone: "UTC",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-      };
-
-      this.setState({
-          myPos:
-            {
-              title: "Текущая позиция",
-              description: "Точка показывающая текущее местоположение прользователя",
-              coords: { latitude: position.coords.latitude, longitude: position.coords.longitude },
-              timeString: time.toString(),
-              time: time.toLocaleString("ru", options),
-              timestamp: position.timestamp,// Отметка времени
-              provider: position.provider,
-              altitudeAccuracy: position.coords.altitudeAccuracy,// Точность определения высоты
-              speed: position.coords.speed,
-              heading: position.coords.heading,// Заголовок
-              accuracy: position.coords.accuracy, // Точность
-              altitude: position.coords.altitude, // Высота
-            },
-        },
-      );
-    };
-
-    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-      let R = 6371;
-      let dLat = deg2rad(lat2 - lat1);
-      let dLon = deg2rad(lon2 - lon1);
-      let a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2)
-      ;
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      let d = R * c;
-      return d;
-    }
-
-    function deg2rad(deg) {
-      return deg * (Math.PI / 180);
-    }
-
-
-    const marksLen = (coords1, coords2) => {
-      return getDistanceFromLatLonInKm(coords1.latitude, coords1.longitude, coords2.latitude, coords2.longitude);
-    };
-
-    const pathLen = (markers) => {
-      let summ = 0;
-      for (let i = 0; i < markers.length - 1; i++) {
-        summ += marksLen(markers[i].coords, (markers[i + 1].coords));
-      }
-      return summ;
-    };
-
-    const alertErr = (error) => {
-      Alert.alert("Error", JSON.stringify(error));
-    };
-
-    this.Start = async () => {
-      this.watchID = Geolocation.watchPosition(position => {
-        addCoords(position);
-        myPos(position);
-      });
-      console.log("start");
-    };
-
-    this.getPoz = async () => {
-      Geolocation.getCurrentPosition(myPos, alertErr, {
-        enableHighAccuracy: true,
-        timeout: 20000,
-        maximumAge: 1000,
-      });
-      console.log("get poz");
-    };
 
   }
 
-
-
-  componentDidMount() {
-    if (this.state.startLoc == true) {
-      this.hasLocationPermission().then(r => {
-        if (r == true) {
-          this.Start();
-          this.getPoz();
-          console.log("end");
-          this.setState({ startLoc: false });
-        }
-      });
-    }
-
-  }
-
-  componentWillUnmount() {
-    this.watchID != null && Geolocation.clearWatch(this.watchID);
-  }
 
   render() {
+    const { getP, markers, getInf, myPoz } = this.props;
     return (
       <View style={styles.main}>
         <MapView
           showsUserLocation={true}
           style={styles.map}
           mapType={"none"}
+          onLongPress={e => this.setState( {newMark: e.nativeEvent.coordinate} )}
         >
           <UrlTile
             //urlTemplate="http://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -231,7 +65,49 @@ class MyMap extends Component {
             maximumZ={20}
             zIndex={0}
           />
-          {this.state.markers.length > 0 && this.state.viewMarks &&
+          <Marker
+            coordinate={myPoz.coords}
+            title={"User"}
+            pinColor={"green"}
+            zIndex={6}
+            onPress={()=>{getInf(-1)}}
+          >
+          </Marker>
+
+          {this.props.viewMarks && markers.length > 0 &&
+            markers.map(
+              (items, index) => (
+                <Marker
+                  key={index}
+                  coordinate={items.coords}
+                  title={"Point#" + (index+1)}
+                  zIndex={5}
+                  onPress={()=>{getInf(index)}}
+                />
+              ),
+            )}
+
+
+          {
+            this.state.newMark != null && <Marker title={"MyMark"} coordinate={this.state.newMark} />
+          }
+
+          {this.props.viewPoliline && markers.length > 1 &&
+          <Polyline coordinates={markers.map(item => {
+            return item.coords;
+          })} zIndex={2} />}
+
+
+
+        </MapView>
+
+
+
+
+        {/*
+
+
+        {this.state.markers.length > 0 && this.state.viewMarks &&
             this.state.markers.map(
               (items, index) => (
                 <Marker
@@ -242,19 +118,11 @@ class MyMap extends Component {
                 />
               ),
             )}
-
-          <Marker
-            coordinate={this.state.myPos.coords}
-            title={"User"}
-            pinColor={"green"}
-            zIndex={6}
-          >
-          </Marker>
-          {this.state.viewPoliline && this.state.markers.length > 1 &&
+        {this.state.viewPoliline && this.state.markers.length > 1 &&
             <Polyline coordinates={this.state.markers.map(item => {
               return item.coords;
             })} zIndex={2} />}
-        </MapView>
+
         <MarkerInf
           style={styles.markInf}
           inf={
@@ -295,6 +163,9 @@ class MyMap extends Component {
           }
         >
         </MapButton>
+
+        */
+        }
 
       </View>
     );

@@ -31,11 +31,11 @@ class MarkerInf extends Component {
           <View style={styles.viewPos}>
             <View style={styles.main_inf}>
               <Text style={styles.pos}> latitude: </Text>
-              <Text>{this.props.inf.coords.latitude} </Text>
+              <Text>{this.props.inf.coords.latitude.toFixed(4)} </Text>
             </View>
             <View style={styles.main_inf}>
               <Text style={styles.pos}> longitude: </Text>
-              <Text>{this.props.inf.coords.longitude} </Text>
+              <Text>{this.props.inf.coords.longitude.toFixed(4)} </Text>
             </View>
 
           </View>
@@ -54,7 +54,7 @@ class MarkerInf extends Component {
         </View>
         <View>
           <Text>
-            Описание: {this.props.inf.desc}
+            Описание: {this.props.inf.description}
           </Text>
         </View>
       </ScrollView>
@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
     boxSizing: "content-box",
     paddingTop: 10,
     paddingRight: 10,
-    paddingBottom: 10,
     paddingLeft: 10,
     overflow: "hidden",
     borderLeftWidth: 2,
@@ -88,14 +87,14 @@ const styles = StyleSheet.create({
 
   },
   viewPos: {
-    flex:1,
+    flex: 1,
 
   },
   pos: {
     fontWeight: "700",
   },
-  desk:{
-    flex:1.7,
+  desk: {
+    flex: 1.2,
 
   },
 

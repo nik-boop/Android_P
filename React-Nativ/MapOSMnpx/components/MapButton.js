@@ -11,19 +11,6 @@ import {
 class TopLine extends Component {
   constructor(props) {
     super(props);
-    this.drawLine = () => {
-      let lines = this.state.marklist.map(item => (item.coords));
-      lines.push(this.state.location);
-      this.setState({ lines: lines });
-    };
-
-    this.clearLine = () => {
-      this.setState({ lines: [] });
-    };
-
-    this.clearMarker = () => {
-      this.setState({ marklist: [], lines: [] });
-    };
 
   }
 
@@ -59,12 +46,12 @@ class TopLine extends Component {
         <View style={styles.button} >
           <TouchableOpacity style={press3? styles.buttonPresOn: styles.buttonPresOff}
                      onPress={() => {
-                       this.props.func.getPoz();
+                       this.props.func.dellAll();
                        press3 = !press3
                      }}
           >
             <Text style={styles.buttonText}>
-              Мое местоположение
+              Удалить все пометки
             </Text>
           </TouchableOpacity>
         </View>
@@ -77,10 +64,11 @@ class TopLine extends Component {
 const styles = StyleSheet.create({
   main: {},
   buttonbar: {
-    height: "10%",
+    flex: 1,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    borderWidth:1
   },
   button: {
     backgroundColor: "#2191eb",
@@ -93,7 +81,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     textAlign: "center",
     textAlignVertical: "center",
-    color: "#fff",
+    color: "#ffffff",
     width: "100%",
     height: "100%",
   },

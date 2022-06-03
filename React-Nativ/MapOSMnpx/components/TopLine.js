@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 
+
 class TopLine extends Component {
   constructor(props) {
     super(props);
